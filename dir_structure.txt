@@ -1,0 +1,20 @@
+
+
+tasc_dasboard_gui/
+│
+├── dashboard/                  
+│   ├── __init__.py
+│   ├── main.py                 
+│   ├── config.py               
+│   ├── inputs.py               
+│   ├── ros_interface.py        
+│   └── gui.py                  
+│
+├── rover/                      
+│   ├── __init__.py
+│   ├── main.py                 
+│   └── node.py                 
+│
+└── controller_mappings.json    
+
+

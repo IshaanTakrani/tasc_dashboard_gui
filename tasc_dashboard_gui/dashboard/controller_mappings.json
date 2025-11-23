@@ -1,0 +1,62 @@
+{
+    "Sony Interactive Entertainment DualSense Wireless Controller": {
+        "0": {
+            "logical": "L_STICK_X",
+            "type": "axis"
+        },
+        "1": {
+            "logical": "L_STICK_Y",
+            "type": "axis"
+        },
+        "3": {
+            "logical": "R_STICK_X",
+            "type": "axis"
+        },
+        "4": {
+            "logical": "R_STICK_Y",
+            "type": "axis"
+        },
+        "17": {
+            "logical": "DPAD_DOWN",
+            "type": "axis_as_btn",
+            "trigger_val": 1
+        },
+        "16": {
+            "logical": "DPAD_RIGHT",
+            "type": "axis_as_btn",
+            "trigger_val": 1
+        },
+        "304": {
+            "logical": "BTN_SOUTH",
+            "type": "btn"
+        },
+        "305": {
+            "logical": "BTN_EAST",
+            "type": "btn"
+        },
+        "308": {
+            "logical": "BTN_WEST",
+            "type": "btn"
+        },
+        "307": {
+            "logical": "BTN_NORTH",
+            "type": "btn"
+        },
+        "310": {
+            "logical": "BTN_L1",
+            "type": "btn"
+        },
+        "311": {
+            "logical": "BTN_R1",
+            "type": "btn"
+        },
+        "317": {
+            "logical": "BTN_L3",
+            "type": "btn"
+        },
+        "318": {
+            "logical": "BTN_R3",
+            "type": "btn"
+        }
+    }
+}

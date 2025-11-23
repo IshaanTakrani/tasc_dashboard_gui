@@ -1,0 +1,145 @@
+Here is a comprehensive `README.md` file for your project. It covers hardware requirements, software installation, permission handling (crucial for controller input), and instructions for running both the Rover and Dashboard.
+
+***
+
+# TASC Project: ROS 2 Rover & Controller Dashboard
+
+This project implements a remote control system for a robotic rover using **ROS 2** and **PyQt6**. It features a custom graphical dashboard for the operator (PC) and a control node for the robot, supporting video streaming, real-time telemetry, and a dual-link robotic arm visualization.
+
+## 📂 Project Structure
+
+```text
+tasc_project/
+├── dashboard/                  # Operator Interface (PC)
+│   ├── main.py                 # Entry point for the GUI
+│   ├── inputs.py               # Controller mapping & evdev logic
+│   ├── ros_interface.py        # ROS 2 communication worker
+│   ├── gui.py                  # Custom widgets (Visualizer, Arm, Graphs)
+│   └── config.py               # Settings & Constants
+│
+├── rover/                      # Robot Control Logic (Raspberry Pi/Jetson)
+│   ├── main.py                 # Entry point for the Rover
+│   └── node.py                 # Hardware control & logic
+│
+└── controller_mappings.json    # Created automatically after mapping
+```
+
+## 🛠️ Prerequisites
+
+### Hardware
+*   **Operator PC:** Linux machine (Ubuntu 22.04 recommended) with a display.
+*   **Rover Computer:** Raspberry Pi 4, Jetson Nano, or similar running Ubuntu/ROS 2.
+*   **Game Controller:** Xbox, PlayStation (DualShock/DualSense), or generic USB gamepad.
+*   **USB Camera:** Connected to the Rover.
+
+### Software
+*   **Python 3.10+**
+*   **ROS 2** (Humble Hawksbill or Jazzy Jalisco recommended).
+*   **System Libraries:** `libgl1-mesa-glx` (for OpenCV/GUI).
+
+## 📥 Installation
+
+### 1. Install System Dependencies
+Both the PC and the Rover need ROS 2 and OpenCV system dependencies installed.
+
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install ROS 2 cv_bridge (Replace 'humble' with your ROS distro)
+sudo apt install ros-humble-cv-bridge ros-humble-vision-opencv
+
+# Install generic Python tools
+sudo apt install python3-pip
+```
+
+### 2. Install Python Libraries
+Run this on **both** the PC and the Rover:
+
+```bash
+pip3 install PyQt6 evdev opencv-python numpy
+```
+
+### 3. Setup Input Permissions (Operator PC)
+The dashboard uses `evdev` to read raw controller inputs. By default, Linux restricts access to `/dev/input/`.
+
+**Option A (Temporary - Good for testing):**
+Run this command every time you plug in the controller or reboot:
+```bash
+sudo chmod a+r /dev/input/event*
+```
+
+**Option B (Permanent - Recommended):**
+Add your user to the `input` group:
+```bash
+sudo usermod -aG input $USER
+```
+*You must log out and log back in for this to take effect.*
+
+---
+
+## 🚀 How to Run
+
+### Step 1: Start the Rover Node
+On the **Robot**, navigate to the project folder and run:
+
+```bash
+source /opt/ros/humble/setup.bash  # Source ROS 2
+python3 rover/main.py
+```
+*Output should say: `[INFO] [RoverROS]: Rover Node Started. Initializing...`*
+
+### Step 2: Start the Dashboard
+On the **Operator PC**, ensure your controller is plugged in, then run:
+
+```bash
+source /opt/ros/humble/setup.bash  # Source ROS 2
+python3 dashboard/main.py
+```
+
+### Step 3: Controller Mapping (First Time Only)
+1.  The **Device Selection Dialog** will appear.
+2.  Select your controller from the list.
+3.  Click **"Create New Mapping"**.
+4.  Follow the on-screen wizard instructions (don't touch the controller during calibration, then press the specific buttons requested).
+5.  Once finished, click **"Connect"**.
+
+---
+
+## 🎮 Controls & Features
+
+### Robotic Arm Control
+*   **Shoulder (Link 1):** `D-Pad UP` / `D-Pad DOWN` (or mapped Face Buttons North/South).
+*   **Elbow (Link 2):** `Face Button West` (Square/X) / `Face Button East` (Circle/B).
+
+### Dashboard Features
+1.  **Connection Status:** Shows ROS 2 connectivity and packet loss.
+2.  **Visualizer:** SVG representation of the physical controller showing real-time inputs.
+3.  **Performance Graphs:** Real-time plots for Latency (ms), Stability (%), and Packet Rate (Hz).
+4.  **Robot Feed:** toggleable camera stream from the rover.
+5.  **Arm Visualizer:** A 2D kinematic representation of the rover's arm and chassis.
+
+## ⚠️ Troubleshooting
+
+**1. "JSONDecodeError" on startup:**
+Your `controller_mappings.json` file might be corrupted. Delete the file:
+```bash
+rm controller_mappings.json
+```
+Then restart the dashboard and remap your controller.
+
+**2. Controller not showing in list:**
+Ensure you have permissions to read input devices (see **Installation Step 3**).
+
+**3. Nodes cannot see each other:**
+*   Ensure both the PC and Rover are on the **same Wi-Fi network**.
+*   Ensure both are using the same **ROS_DOMAIN_ID**.
+    ```bash
+    export ROS_DOMAIN_ID=0  # Run this on both terminals before starting python scripts
+    ```
+
+**4. `ModuleNotFoundError: No module named 'cv2'`:**
+If you installed `opencv-python` but still get this, try installing the system package:
+```bash
+sudo apt install python3-opencv
+```
